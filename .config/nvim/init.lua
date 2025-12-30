@@ -1,3 +1,8 @@
+vim.opt.tabstop = 4      -- how wide a tab looks
+vim.opt.shiftwidth = 4   -- indent size
+vim.opt.softtabstop = 4  -- <Tab>/<BS> behavior
+vim.opt.expandtab = true -- use spaces instead of tabs
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 -- NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -20,9 +25,9 @@ vim.o.relativenumber = true
 -- increase startup-time. Remove this option if you want your OS clipboard to remain independent.
 -- See `:help 'clipboard'`
 vim.api.nvim_create_autocmd('UIEnter', {
-  callback = function()
-    vim.o.clipboard = 'unnamedplus'
-  end,
+    callback = function()
+        vim.o.clipboard = 'unnamedplus'
+    end,
 })
 
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
@@ -57,16 +62,22 @@ vim.keymap.set({ 'n' }, '<A-j>', '<C-w>j')
 vim.keymap.set({ 'n' }, '<A-k>', '<C-w>k')
 vim.keymap.set({ 'n' }, '<A-l>', '<C-w>l')
 
+vim.keymap.set('n', '<leader>f', function()
+    vim.lsp.buf.format({ async = true })
+end, { desc = "Format buffer" })
+
+vim.keymap.set('n', '<leader>lg', '<cmd>LazyGit<cr>', { desc = "LazyGit" })
+
 -- [[ Basic Autocommands ]].
 -- See `:h lua-guide-autocommands`, `:h autocmd`, `:h nvim_create_autocmd()`
 
 -- Highlight when yanking (copying) text.
 -- Try it with `yap` in normal mode. See `:h vim.hl.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
-  desc = 'Highlight when yanking (copying) text',
-  callback = function()
-    vim.hl.on_yank()
-  end,
+    desc = 'Highlight when yanking (copying) text',
+    callback = function()
+        vim.hl.on_yank()
+    end,
 })
 
 -- [[ Create user commands ]]
@@ -74,9 +85,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- Create a command `:GitBlameLine` that print the git blame for the current line
 vim.api.nvim_create_user_command('GitBlameLine', function()
-  local line_number = vim.fn.line('.') -- Get the current line number. See `:h line()`
-  local filename = vim.api.nvim_buf_get_name(0)
-  print(vim.system({ 'git', 'blame', '-L', line_number .. ',+1', filename }):wait().stdout)
+    local line_number = vim.fn.line('.') -- Get the current line number. See `:h line()`
+    local filename = vim.api.nvim_buf_get_name(0)
+    print(vim.system({ 'git', 'blame', '-L', line_number .. ',+1', filename }):wait().stdout)
 end, { desc = 'Print the git blame for the current line' })
 
 -- [[ Add optional packages ]]
@@ -90,4 +101,27 @@ vim.cmd('packadd! nohlsearch')
 -- [[ Install plugins ]]
 -- Nvim functionality can be extended by installing external plugins.
 -- One way to do it is with a built-in plugin manager. See `:h vim.pack`.
-vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
+vim.pack.add({
+    { src = "https://github.com/neovim/nvim-lspconfig" },
+    -- { src = "https://github.com/olimorris/onedarkpro.nvim.git" },
+    { src = "https://github.com/mason-org/mason.nvim" },
+    { src = "https://github.com/mason-org/mason-lspconfig.nvim" },
+    { src = "https://github.com/navarasu/onedark.nvim.git" },
+    { src = "https://github.com/folke/which-key.nvim.git" },
+    { src = "https://github.com/kdheepak/lazygit.nvim.git" },
+    { src = "https://github.com/lewis6991/gitsigns.nvim.git" }
+})
+
+require("onedark").setup({
+    style = "warmer"
+})
+require("onedark").load()
+-- require("onedarkpro").setup()
+vim.cmd("colorscheme onedark")
+
+require("gitsigns").setup()
+
+require("mason").setup()
+require("mason-lspconfig").setup({
+    ensure_installed = { "lua_ls", "rust_analyzer", "clangd" }
+})
