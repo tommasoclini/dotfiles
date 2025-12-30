@@ -1,0 +1,24 @@
+{
+  "plugins": {
+    "mini.pick": {
+      "rev": "c8f4ff0251ccb8c6a993ee0dee4e06d9c21a4b99",
+      "src": "https://github.com/echasnovski/mini.pick"
+    },
+    "multicursor.nvim": {
+      "rev": "6fba38bccf45cfb681f4ff6098f886213f299a34",
+      "src": "https://github.com/jake-stewart/multicursor.nvim"
+    },
+    "nvim-lspconfig": {
+      "rev": "4d3b3bb8815fbe37bcaf3dbdb12a22382bc11ebe",
+      "src": "https://github.com/neovim/nvim-lspconfig"
+    },
+    "oil.nvim": {
+      "rev": "bbad9a76b2617ce1221d49619e4e4b659b3c61fc",
+      "src": "https://github.com/stevearc/oil.nvim"
+    },
+    "onedarkpro.nvim": {
+      "rev": "5ffd45b3602bc1ed75f0b2be6c5c1f6ba5c6b796",
+      "src": "https://github.com/olimorris/onedarkpro.nvim"
+    }
+  }
+}
