@@ -3,6 +3,10 @@ vim.opt.shiftwidth = 4   -- indent size
 vim.opt.softtabstop = 4  -- <Tab>/<BS> behavior
 vim.opt.expandtab = true -- use spaces instead of tabs
 
+vim.o.exrc = true
+
+vim.diagnostic.config({ virtual_text = true })
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 -- NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -38,7 +42,8 @@ vim.o.smartcase = true
 vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 10
+vim.o.scrolloff = 4
+vim.o.sidescrolloff = 4
 
 -- Show <tab> and trailing spaces
 vim.o.list = true
@@ -68,6 +73,9 @@ end, { desc = "Format buffer" })
 
 vim.keymap.set('n', '<leader>lg', '<cmd>LazyGit<cr>', { desc = "LazyGit" })
 
+vim.keymap.set('n', '<S-h>', "<cmd>BufferLineCyclePrev<cr>")
+vim.keymap.set('n', '<S-l>', "<cmd>BufferLineCycleNext<cr>")
+
 -- [[ Basic Autocommands ]].
 -- See `:h lua-guide-autocommands`, `:h autocmd`, `:h nvim_create_autocmd()`
 
@@ -90,6 +98,27 @@ vim.api.nvim_create_user_command('GitBlameLine', function()
     print(vim.system({ 'git', 'blame', '-L', line_number .. ',+1', filename }):wait().stdout)
 end, { desc = 'Print the git blame for the current line' })
 
+vim.api.nvim_create_autocmd("BufHidden", {
+    callback = function(ev)
+        local buf = ev.buf
+        if vim.bo[buf].buftype ~= "" then
+            return
+        end
+        if vim.api.nvim_buf_get_name(buf) ~= "" then
+            return
+        end
+        -- Don't delete if user typed something
+        if vim.bo[buf].modified then
+            return
+        end
+        vim.schedule(function()
+            if vim.api.nvim_buf_is_valid(buf) then
+                vim.api.nvim_buf_delete(buf, { force = true })
+            end
+        end)
+    end,
+})
+
 -- [[ Add optional packages ]]
 -- Nvim comes bundled with a set of packages that are not enabled by
 -- default. You can enable any of them by using the `:packadd` command.
@@ -109,7 +138,15 @@ vim.pack.add({
     { src = "https://github.com/navarasu/onedark.nvim.git" },
     { src = "https://github.com/folke/which-key.nvim.git" },
     { src = "https://github.com/kdheepak/lazygit.nvim.git" },
-    { src = "https://github.com/lewis6991/gitsigns.nvim.git" }
+    { src = "https://github.com/lewis6991/gitsigns.nvim.git" },
+    {
+        src = "https://github.com/saghen/blink.cmp.git",
+        version = 'v1.8.0',
+    },
+    {
+        src = "https://github.com/akinsho/bufferline.nvim.git",
+        version = 'v4.9.1',
+    }
 })
 
 require("onedark").setup({
@@ -120,6 +157,23 @@ require("onedark").load()
 vim.cmd("colorscheme onedark")
 
 require("gitsigns").setup()
+
+require("blink.cmp").setup({
+    fuzzy = {
+        implementation = "prefer_rust"
+    },
+    keymap = {
+        preset = "default",
+        ["<CR>"] = { 'accept', 'fallback' }
+    }
+})
+
+require("bufferline").setup({
+    options = {
+        always_show_bufferline = false
+    }
+})
+vim.o.termguicolors = true
 
 require("mason").setup()
 require("mason-lspconfig").setup({
