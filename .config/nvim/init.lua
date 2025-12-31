@@ -1,6 +1,6 @@
-vim.opt.tabstop = 4      -- how wide a tab looks
-vim.opt.shiftwidth = 4   -- indent size
-vim.opt.softtabstop = 4  -- <Tab>/<BS> behavior
+vim.opt.tabstop = 4 -- how wide a tab looks
+vim.opt.shiftwidth = 4 -- indent size
+vim.opt.softtabstop = 4 -- <Tab>/<BS> behavior
 vim.opt.expandtab = true -- use spaces instead of tabs
 
 vim.o.exrc = true
@@ -10,7 +10,7 @@ vim.diagnostic.config({ virtual_text = true })
 -- Set <space> as the leader key
 -- See `:help mapleader`
 -- NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
-vim.g.mapleader = ' '
+vim.g.mapleader = " "
 
 -- [[ Setting options ]] See `:h vim.o`
 -- NOTE: You can change these options as you wish!
@@ -28,9 +28,9 @@ vim.o.relativenumber = true
 -- Sync clipboard between OS and Neovim. Schedule the setting after `UiEnter` because it can
 -- increase startup-time. Remove this option if you want your OS clipboard to remain independent.
 -- See `:help 'clipboard'`
-vim.api.nvim_create_autocmd('UIEnter', {
+vim.api.nvim_create_autocmd("UIEnter", {
     callback = function()
-        vim.o.clipboard = 'unnamedplus'
+        vim.o.clipboard = "unnamedplus"
     end,
 })
 
@@ -55,34 +55,34 @@ vim.o.confirm = true
 -- [[ Set up keymaps ]] See `:h vim.keymap.set()`, `:h mapping`, `:h keycodes`
 
 -- Use <Esc> to exit terminal mode
-vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')
+vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 
 -- Map <A-j>, <A-k>, <A-h>, <A-l> to navigate between windows in any modes
-vim.keymap.set({ 't', 'i' }, '<A-h>', '<C-\\><C-n><C-w>h')
-vim.keymap.set({ 't', 'i' }, '<A-j>', '<C-\\><C-n><C-w>j')
-vim.keymap.set({ 't', 'i' }, '<A-k>', '<C-\\><C-n><C-w>k')
-vim.keymap.set({ 't', 'i' }, '<A-l>', '<C-\\><C-n><C-w>l')
-vim.keymap.set({ 'n' }, '<A-h>', '<C-w>h')
-vim.keymap.set({ 'n' }, '<A-j>', '<C-w>j')
-vim.keymap.set({ 'n' }, '<A-k>', '<C-w>k')
-vim.keymap.set({ 'n' }, '<A-l>', '<C-w>l')
+vim.keymap.set({ "t", "i" }, "<A-h>", "<C-\\><C-n><C-w>h")
+vim.keymap.set({ "t", "i" }, "<A-j>", "<C-\\><C-n><C-w>j")
+vim.keymap.set({ "t", "i" }, "<A-k>", "<C-\\><C-n><C-w>k")
+vim.keymap.set({ "t", "i" }, "<A-l>", "<C-\\><C-n><C-w>l")
+vim.keymap.set({ "n" }, "<A-h>", "<C-w>h")
+vim.keymap.set({ "n" }, "<A-j>", "<C-w>j")
+vim.keymap.set({ "n" }, "<A-k>", "<C-w>k")
+vim.keymap.set({ "n" }, "<A-l>", "<C-w>l")
 
-vim.keymap.set('n', '<leader>f', function()
+vim.keymap.set("n", "<leader>f", function()
     vim.lsp.buf.format({ async = true })
 end, { desc = "Format buffer" })
 
-vim.keymap.set('n', '<leader>lg', '<cmd>LazyGit<cr>', { desc = "LazyGit" })
+vim.keymap.set("n", "<leader>lg", "<cmd>LazyGit<cr>", { desc = "LazyGit" })
 
-vim.keymap.set('n', '<S-h>', "<cmd>BufferLineCyclePrev<cr>")
-vim.keymap.set('n', '<S-l>', "<cmd>BufferLineCycleNext<cr>")
+vim.keymap.set("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>")
+vim.keymap.set("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>")
 
 -- [[ Basic Autocommands ]].
 -- See `:h lua-guide-autocommands`, `:h autocmd`, `:h nvim_create_autocmd()`
 
 -- Highlight when yanking (copying) text.
 -- Try it with `yap` in normal mode. See `:h vim.hl.on_yank()`
-vim.api.nvim_create_autocmd('TextYankPost', {
-    desc = 'Highlight when yanking (copying) text',
+vim.api.nvim_create_autocmd("TextYankPost", {
+    desc = "Highlight when yanking (copying) text",
     callback = function()
         vim.hl.on_yank()
     end,
@@ -92,11 +92,11 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- See `:h nvim_create_user_command()` and `:h user-commands`
 
 -- Create a command `:GitBlameLine` that print the git blame for the current line
-vim.api.nvim_create_user_command('GitBlameLine', function()
-    local line_number = vim.fn.line('.') -- Get the current line number. See `:h line()`
+vim.api.nvim_create_user_command("GitBlameLine", function()
+    local line_number = vim.fn.line(".") -- Get the current line number. See `:h line()`
     local filename = vim.api.nvim_buf_get_name(0)
-    print(vim.system({ 'git', 'blame', '-L', line_number .. ',+1', filename }):wait().stdout)
-end, { desc = 'Print the git blame for the current line' })
+    print(vim.system({ "git", "blame", "-L", line_number .. ",+1", filename }):wait().stdout)
+end, { desc = "Print the git blame for the current line" })
 
 vim.api.nvim_create_autocmd("BufHidden", {
     callback = function(ev)
@@ -125,7 +125,7 @@ vim.api.nvim_create_autocmd("BufHidden", {
 
 -- For example, to add the "nohlsearch" package to automatically turn off search highlighting after
 -- 'updatetime' and when going to insert mode
-vim.cmd('packadd! nohlsearch')
+vim.cmd("packadd! nohlsearch")
 
 -- [[ Install plugins ]]
 -- Nvim functionality can be extended by installing external plugins.
@@ -141,16 +141,16 @@ vim.pack.add({
     { src = "https://github.com/lewis6991/gitsigns.nvim.git" },
     {
         src = "https://github.com/saghen/blink.cmp.git",
-        version = 'v1.8.0',
+        version = "v1.8.0",
     },
     {
         src = "https://github.com/akinsho/bufferline.nvim.git",
-        version = 'v4.9.1',
-    }
+        version = "v4.9.1",
+    },
 })
 
 require("onedark").setup({
-    style = "warmer"
+    style = "warmer",
 })
 require("onedark").load()
 -- require("onedarkpro").setup()
@@ -160,22 +160,22 @@ require("gitsigns").setup()
 
 require("blink.cmp").setup({
     fuzzy = {
-        implementation = "prefer_rust"
+        implementation = "prefer_rust",
     },
     keymap = {
         preset = "default",
-        ["<CR>"] = { 'accept', 'fallback' }
-    }
+        ["<CR>"] = { "accept", "fallback" },
+    },
 })
 
 require("bufferline").setup({
     options = {
-        always_show_bufferline = false
-    }
+        always_show_bufferline = false,
+    },
 })
 vim.o.termguicolors = true
 
 require("mason").setup()
 require("mason-lspconfig").setup({
-    ensure_installed = { "lua_ls", "rust_analyzer", "clangd" }
+    ensure_installed = { "lua_ls", "rust_analyzer", "clangd" },
 })
