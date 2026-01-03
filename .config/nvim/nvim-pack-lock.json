@@ -10,8 +10,12 @@
       "src": "https://github.com/akinsho/bufferline.nvim.git",
       "version": "'v4.9.1'"
     },
+    "esp32.nvim": {
+      "rev": "7b929bd908ba7358b073d1923832cd8d2e682503",
+      "src": "https://github.com/Aietes/esp32.nvim.git"
+    },
     "gitsigns.nvim": {
-      "rev": "130beacf8a51f00aede9c31064c749136679a321",
+      "rev": "6bd29494e3f79ff08be1d35bc1926ed23c22ed9a",
       "src": "https://github.com/lewis6991/gitsigns.nvim.git"
     },
     "lazygit.nvim": {
@@ -26,13 +30,25 @@
       "rev": "57e5a8addb8c71fb063ee4acda466c7cf6ad2800",
       "src": "https://github.com/mason-org/mason.nvim"
     },
+    "mini.nvim": {
+      "rev": "5d8d141cb113e9d235c9215475b26b0d20612150",
+      "src": "https://github.com/nvim-mini/mini.nvim.git"
+    },
     "nvim-lspconfig": {
-      "rev": "41ceb6bba3a40128b7841f5b7f5a9dae7201e823",
+      "rev": "ac04ec3c2af08e9821b4eb64ede86072b9b213bf",
       "src": "https://github.com/neovim/nvim-lspconfig"
+    },
+    "oil.nvim": {
+      "rev": "81b8a91735ad5cd24a6b3137f14a89f19176364f",
+      "src": "https://github.com/stevearc/oil.nvim.git"
     },
     "onedark.nvim": {
       "rev": "213c23ae45a04797572242568d5d51937181792d",
       "src": "https://github.com/navarasu/onedark.nvim.git"
+    },
+    "snacks.nvim": {
+      "rev": "fe7cfe9800a182274d0f868a74b7263b8c0c020b",
+      "src": "https://github.com/folke/snacks.nvim.git"
     },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",

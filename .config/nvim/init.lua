@@ -1,9 +1,15 @@
-vim.opt.tabstop = 4 -- how wide a tab looks
-vim.opt.shiftwidth = 4 -- indent size
-vim.opt.softtabstop = 4 -- <Tab>/<BS> behavior
-vim.opt.expandtab = true -- use spaces instead of tabs
+vim.o.tabstop = 4 -- how wide a tab looks
+vim.o.shiftwidth = 4 -- indent size
+vim.o.softtabstop = 4 -- <Tab>/<BS> behavior
+vim.o.expandtab = true -- use spaces instead of tabs
+
+-- vim.o.winborder = "rounded"
+
+vim.o.signcolumn = "yes"
 
 vim.o.exrc = true
+
+vim.o.wrap = false
 
 vim.diagnostic.config({ virtual_text = true })
 
@@ -67,7 +73,7 @@ vim.keymap.set({ "n" }, "<A-j>", "<C-w>j")
 vim.keymap.set({ "n" }, "<A-k>", "<C-w>k")
 vim.keymap.set({ "n" }, "<A-l>", "<C-w>l")
 
-vim.keymap.set("n", "<leader>f", function()
+vim.keymap.set("n", "<leader>lf", function()
     vim.lsp.buf.format({ async = true })
 end, { desc = "Format buffer" })
 
@@ -75,6 +81,18 @@ vim.keymap.set("n", "<leader>lg", "<cmd>LazyGit<cr>", { desc = "LazyGit" })
 
 vim.keymap.set("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>")
 vim.keymap.set("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>")
+
+vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { desc = "LSP: Rename symbol" })
+
+vim.keymap.set("n", "<C-S-i>", function()
+    local buf = vim.api.nvim_get_current_buf()
+    local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = buf })
+    vim.lsp.inlay_hint.enable(not enabled, { bufnr = buf })
+end, { desc = "Toggle LSP inlay hints" })
+
+vim.keymap.set("n", "<leader>o", "<cmd>Oil<cr>", { desc = "Oil file explorer" })
+
+vim.keymap.set("n", "<leader>f", ":Pick files<cr>", { desc = "pick files" })
 
 -- [[ Basic Autocommands ]].
 -- See `:h lua-guide-autocommands`, `:h autocmd`, `:h nvim_create_autocmd()`
@@ -90,34 +108,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 -- [[ Create user commands ]]
 -- See `:h nvim_create_user_command()` and `:h user-commands`
-
--- Create a command `:GitBlameLine` that print the git blame for the current line
-vim.api.nvim_create_user_command("GitBlameLine", function()
-    local line_number = vim.fn.line(".") -- Get the current line number. See `:h line()`
-    local filename = vim.api.nvim_buf_get_name(0)
-    print(vim.system({ "git", "blame", "-L", line_number .. ",+1", filename }):wait().stdout)
-end, { desc = "Print the git blame for the current line" })
-
-vim.api.nvim_create_autocmd("BufHidden", {
-    callback = function(ev)
-        local buf = ev.buf
-        if vim.bo[buf].buftype ~= "" then
-            return
-        end
-        if vim.api.nvim_buf_get_name(buf) ~= "" then
-            return
-        end
-        -- Don't delete if user typed something
-        if vim.bo[buf].modified then
-            return
-        end
-        vim.schedule(function()
-            if vim.api.nvim_buf_is_valid(buf) then
-                vim.api.nvim_buf_delete(buf, { force = true })
-            end
-        end)
-    end,
-})
 
 -- [[ Add optional packages ]]
 -- Nvim comes bundled with a set of packages that are not enabled by
@@ -147,6 +137,10 @@ vim.pack.add({
         src = "https://github.com/akinsho/bufferline.nvim.git",
         version = "v4.9.1",
     },
+    { src = "https://github.com/Aietes/esp32.nvim.git" },
+    { src = "https://github.com/folke/snacks.nvim.git" },
+    { src = "https://github.com/nvim-mini/mini.nvim.git" },
+    { src = "https://github.com/stevearc/oil.nvim.git" },
 })
 
 require("onedark").setup({
@@ -155,6 +149,34 @@ require("onedark").setup({
 require("onedark").load()
 -- require("onedarkpro").setup()
 vim.cmd("colorscheme onedark")
+
+require("oil").setup()
+
+require("mini.bufremove").setup()
+vim.keymap.set("n", "<leader>bd", MiniBufremove.delete, { desc = "My delete buffer" })
+vim.keymap.set("n", "<leader>bw", MiniBufremove.wipeout, { desc = "My wipeout buffer" })
+vim.api.nvim_create_autocmd("BufHidden", {
+    callback = function(ev)
+        local buf = ev.buf
+        if vim.bo[buf].buftype ~= "" then
+            return
+        end
+        if vim.api.nvim_buf_get_name(buf) ~= "" then
+            return
+        end
+        -- Don't delete if user typed something
+        if vim.bo[buf].modified then
+            return
+        end
+        vim.schedule(function()
+            if vim.api.nvim_buf_is_valid(buf) then
+                MiniBufremove.delete(buf, true)
+            end
+        end)
+    end,
+})
+
+require("mini.pick").setup()
 
 require("gitsigns").setup()
 
@@ -171,6 +193,9 @@ require("blink.cmp").setup({
 require("bufferline").setup({
     options = {
         always_show_bufferline = false,
+        right_mouse_command = function(id)
+            MiniBufremove.delete(id, true)
+        end,
     },
 })
 vim.o.termguicolors = true
@@ -179,3 +204,11 @@ require("mason").setup()
 require("mason-lspconfig").setup({
     ensure_installed = { "lua_ls", "rust_analyzer", "clangd" },
 })
+
+local get_clangd = function()
+    local clangd = require("esp32").lsp_config()
+    table.insert(clangd.cmd, "--header-insertion=never")
+    return clangd
+end
+
+vim.lsp.config("clangd", get_clangd())
