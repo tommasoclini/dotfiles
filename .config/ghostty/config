@@ -1,9 +1,13 @@
 font-feature = "-calt"
-font-size = 17.0
-
-background-opacity = 0.9
+font-size = 18.0
 
 window-padding-x = 0,0
 window-padding-y = 0,0
 
 window-decoration = "none"
+
+gtk-tabs-location = "bottom"
+gtk-toolbar-style = "flat"
+
+keybind = shift+alt+l=next_tab
+keybind = shift+alt+h=previous_tab
