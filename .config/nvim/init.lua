@@ -73,7 +73,7 @@ vim.keymap.set({ "n" }, "<A-j>", "<C-w>j")
 vim.keymap.set({ "n" }, "<A-k>", "<C-w>k")
 vim.keymap.set({ "n" }, "<A-l>", "<C-w>l")
 
-vim.keymap.set("n", "<leader>lf", function()
+vim.keymap.set("n", "<leader>f", function()
     vim.lsp.buf.format({ async = true })
 end, { desc = "Format buffer" })
 
@@ -92,7 +92,7 @@ end, { desc = "Toggle LSP inlay hints" })
 
 vim.keymap.set("n", "<leader>o", "<cmd>Oil<cr>", { desc = "Oil file explorer" })
 
-vim.keymap.set("n", "<leader>f", ":Pick files<cr>", { desc = "pick files" })
+vim.keymap.set("n", "<leader>s", ":Pick files<cr>", { desc = "pick files" })
 
 -- [[ Basic Autocommands ]].
 -- See `:h lua-guide-autocommands`, `:h autocmd`, `:h nvim_create_autocmd()`
@@ -151,6 +151,8 @@ require("onedark").load()
 vim.cmd("colorscheme onedark")
 
 require("oil").setup()
+
+require("mini.pairs").setup()
 
 require("mini.bufremove").setup()
 vim.keymap.set("n", "<leader>bd", MiniBufremove.delete, { desc = "My delete buffer" })
