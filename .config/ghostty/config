@@ -6,8 +6,13 @@ window-padding-y = 0,0
 
 window-decoration = "none"
 
+maximize = true
+
 gtk-tabs-location = "bottom"
 gtk-toolbar-style = "flat"
+
+adjust-cursor-thickness = 1
+mouse-scroll-multiplier = 1
 
 keybind = shift+alt+l=next_tab
 keybind = shift+alt+h=previous_tab
