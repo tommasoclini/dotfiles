@@ -9,4 +9,4 @@ dynamic_padding = true
 decorations = "none"
 
 [general]
-import = ["~/.config/alacritty/themes/themes/one_dark.toml"]
+import = ["themes/themes/one_dark.toml"]
