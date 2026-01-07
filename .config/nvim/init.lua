@@ -1,6 +1,18 @@
-vim.o.tabstop = 4 -- how wide a tab looks
-vim.o.shiftwidth = 4 -- indent size
-vim.o.softtabstop = 4 -- <Tab>/<BS> behavior
+local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
+
+vim.o.encoding = "utf-8"
+vim.o.fileencoding = "utf-8"
+
+if is_windows then
+    vim.o.shell = "pwsh"
+    vim.o.shellcmdflag = "-NoLogo -NoExit -Command"
+    vim.o.shellquote = '"'
+    vim.o.shellxquote = ""
+end
+
+vim.o.tabstop = 4      -- how wide a tab looks
+vim.o.shiftwidth = 4   -- indent size
+vim.o.softtabstop = 4  -- <Tab>/<BS> behavior
 vim.o.expandtab = true -- use spaces instead of tabs
 
 -- vim.o.winborder = "rounded"
@@ -85,7 +97,7 @@ vim.keymap.set("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>")
 
 vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { desc = "LSP: Rename symbol" })
 
-vim.keymap.set("n", "<C-S-i>", function()
+vim.keymap.set("n", "<leader>i", function()
     local buf = vim.api.nvim_get_current_buf()
     local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = buf })
     vim.lsp.inlay_hint.enable(not enabled, { bufnr = buf })
@@ -123,7 +135,7 @@ vim.cmd("packadd! nohlsearch")
 -- One way to do it is with a built-in plugin manager. See `:h vim.pack`.
 vim.pack.add({
     { src = "https://github.com/neovim/nvim-lspconfig" },
-    -- { src = "https://github.com/olimorris/onedarkpro.nvim.git" },
+    { src = "https://github.com/olimorris/onedarkpro.nvim.git" },
     { src = "https://github.com/mason-org/mason.nvim" },
     { src = "https://github.com/mason-org/mason-lspconfig.nvim" },
     { src = "https://github.com/navarasu/onedark.nvim.git" },
@@ -138,18 +150,24 @@ vim.pack.add({
         src = "https://github.com/akinsho/bufferline.nvim.git",
         version = "v4.9.1",
     },
-    { src = "https://github.com/Aietes/esp32.nvim.git" },
     { src = "https://github.com/folke/snacks.nvim.git" },
     { src = "https://github.com/nvim-mini/mini.nvim.git" },
     { src = "https://github.com/stevearc/oil.nvim.git" },
 })
 
-require("onedark").setup({
-    style = "warmer",
-})
-require("onedark").load()
--- require("onedarkpro").setup()
-vim.cmd("colorscheme onedark")
+if not is_windows then
+    local onedark = require("onedark")
+    onedark.setup({
+        style = "warmer",
+    })
+    onedark.load()
+
+    vim.cmd("colorscheme onedark")
+else
+    require("onedarkpro").setup()
+
+    vim.cmd("colorscheme onedark")
+end
 
 require("oil").setup()
 
@@ -190,6 +208,7 @@ require("blink.cmp").setup({
     keymap = {
         preset = "default",
         ["<CR>"] = { "accept", "fallback" },
+        ["<C-s>"] = { "show" }
     },
 })
 
@@ -205,13 +224,21 @@ vim.o.termguicolors = true
 
 require("mason").setup()
 require("mason-lspconfig").setup({
-    ensure_installed = { "lua_ls", "rust_analyzer", "clangd" },
+    ensure_installed = {
+        "lua_ls",
+        "rust_analyzer",
+        "clangd",
+        "tombi",
+    },
 })
 
-local get_clangd = function()
-    local clangd = require("esp32").lsp_config()
-    table.insert(clangd.cmd, "--header-insertion=never")
-    return clangd
-end
+if not is_windows then
+    vim.pack.add({ "https://github.com/Aietes/esp32.nvim.git" })
+    local get_clangd = function()
+        local clangd = require("esp32").lsp_config()
+        table.insert(clangd.cmd, "--header-insertion=never")
+        return clangd
+    end
 
-vim.lsp.config("clangd", get_clangd())
+    vim.lsp.config("clangd", get_clangd())
+end
