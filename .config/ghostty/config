@@ -1,4 +1,5 @@
-font-feature = "-calt"
+font-family = "JetBrainsMonoNL Nerd Font Mono"
+font-feature = "-calt, -liga, -dlig"
 font-size = 18.0
 
 window-padding-x = 0,0
