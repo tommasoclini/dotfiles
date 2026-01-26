@@ -19,7 +19,5 @@ if test -d (brew --prefix)"/share/fish/vendor_completions.d"
     set -p fish_complete_path (brew --prefix)/share/fish/vendor_completions.d
 end
 
-set ZEPHYR_BASE /home/tommaso/zephyrproject/zephyr
-
 alias clear "printf '\033[2J\033[3J\033[1;1H'"
 alias nv "nvim"
