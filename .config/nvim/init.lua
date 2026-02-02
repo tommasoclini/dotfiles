@@ -20,6 +20,7 @@ vim.o.softtabstop = 4 -- <Tab>/<BS> behavior
 vim.o.expandtab = true -- use spaces instead of tabs
 
 vim.o.signcolumn = "yes"
+vim.cmd("set colorcolumn=80")
 
 vim.o.exrc = true
 
@@ -48,12 +49,6 @@ vim.o.statusline = vim.o.statusline .. " %{strftime('%H:%M')}"
 vim.diagnostic.config({ virtual_text = true })
 
 vim.g.mapleader = " "
-
-vim.api.nvim_create_autocmd("UIEnter", {
-    callback = function()
-        vim.o.clipboard = "unnamedplus"
-    end,
-})
 
 local scroll = 3
 
@@ -256,6 +251,12 @@ Snacks.toggle.zen():map("<leader>z")
 
 -- AUTOCOMMANDS
 
+vim.api.nvim_create_autocmd("UIEnter", {
+    callback = function()
+        vim.o.clipboard = "unnamedplus"
+    end,
+})
+
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "rust",
     group = vim.api.nvim_create_augroup("Rust_disable_single_quote", { clear = true }),
@@ -274,37 +275,70 @@ vim.api.nvim_create_autocmd("FileType", {
 
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(ev)
-        -- local client = vim.lsp.get_client_by_id(ev.data.client_id)
-
-        local buf = ev.buf
+        local client = vim.lsp.get_client_by_id(ev.data.client_id)
+        local bufnr = ev.buf
 
         vim.keymap.set("n", "<leader>ui", function()
-            local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = buf })
-            vim.lsp.inlay_hint.enable(not enabled, { bufnr = buf })
-        end, { buffer = buf, desc = "Toggle lsp inlay hints" })
+            local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+            vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
+        end, { buffer = bufnr, desc = "Toggle lsp inlay hints" })
         Snacks.toggle.diagnostics():map("<leader>ud")
 
         vim.keymap.set("n", "<leader>gi", function()
             MiniExtra.pickers.lsp({ scope = "implementation" })
-        end, { buffer = buf, desc = "go to implementation" })
+        end, { buffer = bufnr, desc = "go to implementation" })
 
         vim.keymap.set("n", "<leader>gy", function()
             MiniExtra.pickers.lsp({ scope = "type_definition" })
-        end, { buffer = buf, desc = "go to type definition" })
+        end, { buffer = bufnr, desc = "go to type definition" })
 
         vim.keymap.set("n", "<leader>ss", function()
             MiniExtra.pickers.lsp({ scope = "document_symbol" })
-        end, { buffer = buf, desc = "Pick document symbols" })
+        end, { buffer = bufnr, desc = "Pick document symbols" })
 
         vim.keymap.set("n", "<leader>sS", function()
             MiniExtra.pickers.lsp({ scope = "workspace_symbol" })
-        end, { buffer = buf, desc = "Pick workspace symbols" })
+        end, { buffer = bufnr, desc = "Pick workspace symbols" })
 
         vim.keymap.set("n", "<leader>f", function()
-            vim.lsp.buf.format({ async = true, bufnr = buf })
-        end, { buffer = buf, desc = "Format buffer with lsp" })
+            vim.lsp.buf.format({ async = true, bufnr = bufnr })
+        end, { buffer = bufnr, desc = "Format buffer with lsp" })
 
-        vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = buf, desc = "Rename symbol with lsp" })
+        vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename symbol with lsp" })
+
+        if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, bufnr) then
+            -- vim.lsp.inline_completion.enable(true, { bufnr = bufnr })
+
+            vim.keymap.set(
+                "i",
+                "<C-F>",
+                vim.lsp.inline_completion.get,
+                { desc = "LSP: accept inline completion", buffer = bufnr }
+            )
+            vim.keymap.set(
+                "i",
+                "<C-G>",
+                vim.lsp.inline_completion.select,
+                { desc = "LSP: switch inline completion", buffer = bufnr }
+            )
+            vim.keymap.set({ "i", "n" }, "<C-H>", function()
+                vim.lsp.inline_completion.enable(not vim.lsp.inline_completion.is_enabled({ bufnr = bufnr }), {
+                    bufnr = bufnr,
+                })
+            end, { desc = "LSP: toggle inline completion", buffer = bufnr })
+        end
+
+        if client and client.server_capabilities.documentFormattingProvider then
+            vim.api.nvim_create_autocmd("BufWritePre", {
+                buffer = bufnr,
+                callback = function()
+                    vim.lsp.buf.format({
+                        bufnr = bufnr,
+                        async = false,
+                    })
+                end,
+            })
+        end
     end,
 })
 
