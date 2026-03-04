@@ -14,8 +14,8 @@ if is_windows then
     vim.o.shellxquote = ""
 end
 
-vim.o.tabstop = 4 -- how wide a tab looks
-vim.o.shiftwidth = 4 -- indent size
+vim.o.tabstop = 4 -- wide a tab looks
+vim.o.shiftwidth = 4 --  indent size
 vim.o.softtabstop = 4 -- <Tab>/<BS> behavior
 vim.o.expandtab = true -- use spaces instead of tabs
 
@@ -61,6 +61,8 @@ vim.api.nvim_create_autocmd({ "VimResized", "BufWinEnter" }, {
 })
 --]]
 
+vim.lsp.log.set_level(vim.log.levels.WARN)
+
 -- PLUGINS
 
 vim.cmd("packadd! nohlsearch")
@@ -74,30 +76,16 @@ vim.pack.add({
     { src = "https://github.com/lewis6991/gitsigns.nvim.git" },
     {
         src = "https://github.com/saghen/blink.cmp.git",
-        version = "v1.8.0",
+        version = "v1.9.1",
     },
     { src = "https://github.com/folke/snacks.nvim.git" },
     { src = "https://github.com/nvim-mini/mini.nvim.git" },
     { src = "https://github.com/stevearc/oil.nvim.git" },
     { src = "https://github.com/nvim-lua/plenary.nvim.git" },
     { src = "https://github.com/nvim-telescope/telescope.nvim.git" },
-    -- { src = "https://github.com/folke/zen-mode.nvim.git" },
     { src = "https://github.com/nvim-tree/nvim-web-devicons.git" },
+    { src = "https://github.com/mrcjkb/rustaceanvim.git", version = "v7.1.9" },
 })
-
---[[require("zen-mode").setup({
-    window = {
-        backdrop = 0.95,
-        width = 0.75,
-        -- height = 0.85,
-    },
-    plugins = {
-        kitty = {
-            enabled = true,
-            font = "+4",
-        },
-    },
-})--]]
 
 require("telescope").setup({
     pickers = {
@@ -166,7 +154,6 @@ require("mason").setup()
 require("mason-lspconfig").setup({
     ensure_installed = {
         "lua_ls",
-        "rust_analyzer",
         "clangd",
         "tombi",
         "yamlls",
@@ -180,7 +167,10 @@ if not is_windows then
     local get_clangd = function()
         local clangd = require("esp32").lsp_config()
         table.insert(clangd.cmd, "--header-insertion=never")
-        table.insert(clangd.cmd, "--query-driver=/usr/bin/clang*,/usr/bin/gcc,/usr/bin/g++,/usr/bin/cc")
+        table.insert(
+            clangd.cmd,
+            "--query-driver=/usr/bin/clang*,/usr/bin/gcc,/usr/bin/g++,/usr/bin/cc,/home/tommaso/git_repos/bldc/tools/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-gcc,/home/tommaso/git_repos/my-bldc/tools/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-gcc"
+        )
         return clangd
     end
 
@@ -189,18 +179,6 @@ end
 
 -- COLORSCHEME
 
---[[
-if not is_windows then
-    vim.pack.add({ "https://github.com/navarasu/onedark.nvim.git" })
-    local onedark = require("onedark")
-    onedark.setup({
-        style = "warmer",
-    })
-    onedark.load()
-
-    vim.cmd("colorscheme onedark")
-else
---]]
 vim.pack.add({ "https://github.com/olimorris/onedarkpro.nvim.git" })
 require("onedarkpro").setup()
 
@@ -277,51 +255,70 @@ vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(ev)
         local client = vim.lsp.get_client_by_id(ev.data.client_id)
         local bufnr = ev.buf
+        local map = vim.keymap.set
 
-        vim.keymap.set("n", "<leader>ui", function()
+        map("n", "]e", function()
+            vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
+        end, { buffer = bufnr, desc = "go to next error" })
+        map("n", "[e", function()
+            vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
+        end, { buffer = bufnr, desc = "go to previous error" })
+        map("n", "]w", function()
+            vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
+        end, { buffer = bufnr, desc = "go to next warning" })
+        map("n", "[w", function()
+            vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
+        end, { buffer = bufnr, desc = "go to previous warning" })
+        map("n", "]i", function()
+            vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
+        end, { buffer = bufnr, desc = "go to next info" })
+        map("n", "[i", function()
+            vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
+        end, { buffer = bufnr, desc = "go to previous info" })
+        map("n", "]h", function()
+            vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
+        end, { buffer = bufnr, desc = "go to next hint" })
+        map("n", "[h", function()
+            vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
+        end, { buffer = bufnr, desc = "go to previous hint" })
+
+        map("n", "<leader>ui", function()
             local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
             vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
         end, { buffer = bufnr, desc = "Toggle lsp inlay hints" })
         Snacks.toggle.diagnostics():map("<leader>ud")
 
-        vim.keymap.set("n", "<leader>gi", function()
+        map("n", "<leader>gi", function()
             MiniExtra.pickers.lsp({ scope = "implementation" })
         end, { buffer = bufnr, desc = "go to implementation" })
 
-        vim.keymap.set("n", "<leader>gy", function()
+        map("n", "<leader>gy", function()
             MiniExtra.pickers.lsp({ scope = "type_definition" })
         end, { buffer = bufnr, desc = "go to type definition" })
 
-        vim.keymap.set("n", "<leader>ss", function()
+        map("n", "<leader>ss", function()
             MiniExtra.pickers.lsp({ scope = "document_symbol" })
         end, { buffer = bufnr, desc = "Pick document symbols" })
 
-        vim.keymap.set("n", "<leader>sS", function()
+        map("n", "<leader>sS", function()
             MiniExtra.pickers.lsp({ scope = "workspace_symbol" })
         end, { buffer = bufnr, desc = "Pick workspace symbols" })
 
-        vim.keymap.set("n", "<leader>f", function()
+        map("n", "<leader>f", function()
             vim.lsp.buf.format({ async = true, bufnr = bufnr })
         end, { buffer = bufnr, desc = "Format buffer with lsp" })
 
-        vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename symbol with lsp" })
+        map("n", "<leader>r", vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename symbol with lsp" })
 
         if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, bufnr) then
-            -- vim.lsp.inline_completion.enable(true, { bufnr = bufnr })
-
-            vim.keymap.set(
-                "i",
-                "<C-F>",
-                vim.lsp.inline_completion.get,
-                { desc = "LSP: accept inline completion", buffer = bufnr }
-            )
-            vim.keymap.set(
+            map("i", "<C-F>", vim.lsp.inline_completion.get, { desc = "LSP: accept inline completion", buffer = bufnr })
+            map(
                 "i",
                 "<C-G>",
                 vim.lsp.inline_completion.select,
                 { desc = "LSP: switch inline completion", buffer = bufnr }
             )
-            vim.keymap.set({ "i", "n" }, "<C-H>", function()
+            map({ "i", "n" }, "<C-H>", function()
                 vim.lsp.inline_completion.enable(not vim.lsp.inline_completion.is_enabled({ bufnr = bufnr }), {
                     bufnr = bufnr,
                 })
@@ -353,10 +350,10 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 local timer = vim.loop.new_timer()
 
-local function start_minute_timer()
-    local now = os.time()
-    local seconds_until_next_minute = 60 - (now % 60)
+local now = os.time()
+local seconds_until_next_minute = 60 - (now % 60)
 
+if timer then
     timer:start(
         seconds_until_next_minute * 1000,
         60000,
@@ -365,5 +362,3 @@ local function start_minute_timer()
         end)
     )
 end
-
-start_minute_timer()
