@@ -289,7 +289,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
         Snacks.toggle.diagnostics():map("<leader>ud")
 
         map("n", "<leader>gi", function()
-            MiniExtra.pickers.lsp({ scope = "implementation" })
+            MiniExtra.pickers.lsp({ scope = "implementation" }, {
+                source = {
+                    show = function(buf_id, items, query)
+                        local short_items = vim.tbl_map(function(item)
+                            local text = item.text or ""
+                            local path, rest = text:match("^(.-)│(.*)$")
+                            if path then
+                                local fname = vim.fn.fnamemodify(path, ":t")
+                                item = vim.tbl_extend("force", item, { text = fname .. "│" .. rest })
+                            end
+                            return item
+                        end, items)
+                        MiniPick.default_show(buf_id, short_items, query, { show_icons = true })
+                    end,
+                },
+            })
         end, { buffer = bufnr, desc = "go to implementation" })
 
         map("n", "<leader>gy", function()
