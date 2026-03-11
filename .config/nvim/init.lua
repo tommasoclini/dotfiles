@@ -85,7 +85,10 @@ vim.pack.add({
     { src = "https://github.com/nvim-telescope/telescope.nvim.git" },
     { src = "https://github.com/nvim-tree/nvim-web-devicons.git" },
     { src = "https://github.com/mrcjkb/rustaceanvim.git", version = "v7.1.9" },
+    { src = "https://github.com/saecki/crates.nvim.git" },
 })
+
+require("crates").setup()
 
 require("telescope").setup({
     pickers = {
@@ -287,6 +290,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
             vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
         end, { buffer = bufnr, desc = "Toggle lsp inlay hints" })
         Snacks.toggle.diagnostics():map("<leader>ud")
+        Snacks.toggle({
+            name = "Format on Save",
+            get = function()
+                return vim.g.format_on_save ~= false
+            end,
+            set = function(state)
+                vim.g.format_on_save = state
+            end,
+        }):map("<leader>uf")
 
         map("n", "<leader>gi", function()
             MiniExtra.pickers.lsp({ scope = "implementation" }, {
@@ -344,10 +356,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
             vim.api.nvim_create_autocmd("BufWritePre", {
                 buffer = bufnr,
                 callback = function()
-                    vim.lsp.buf.format({
-                        bufnr = bufnr,
-                        async = false,
-                    })
+                    if vim.g.format_on_save == true then
+                        vim.lsp.buf.format({
+                            bufnr = bufnr,
+                            async = false,
+                        })
+                    end
                 end,
             })
         end
