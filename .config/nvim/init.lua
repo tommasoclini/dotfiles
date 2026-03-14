@@ -1,3 +1,5 @@
+vim.loader.enable(true)
+
 local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
 
 -- OPTIONS
@@ -14,10 +16,10 @@ if is_windows then
     vim.o.shellxquote = ""
 end
 
-vim.o.tabstop = 4 -- wide a tab looks
-vim.o.shiftwidth = 4 --  indent size
-vim.o.softtabstop = 4 -- <Tab>/<BS> behavior
-vim.o.expandtab = true -- use spaces instead of tabs
+vim.o.tabstop = 4
+vim.o.shiftwidth = 4
+vim.o.softtabstop = 4
+vim.o.expandtab = true
 
 vim.o.signcolumn = "yes"
 vim.cmd("set colorcolumn=80")
@@ -88,7 +90,7 @@ vim.pack.add({
     { src = "https://github.com/saecki/crates.nvim.git" },
 })
 
-require("crates").setup()
+require("crates").setup({})
 
 require("telescope").setup({
     pickers = {
@@ -225,7 +227,7 @@ vim.keymap.set("n", "<S-l>", function()
     vim.cmd("bnext")
 end, { silent = true })
 vim.keymap.set("n", "<S-h>", function()
-    vim.cmd("bprevious")
+    vim.cmd("bprev")
 end, { silent = true })
 
 Snacks.toggle.zen():map("<leader>z")
