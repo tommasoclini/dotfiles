@@ -70,25 +70,73 @@ vim.lsp.log.set_level(vim.log.levels.WARN)
 vim.cmd("packadd! nohlsearch")
 
 vim.pack.add({
-    { src = "https://github.com/neovim/nvim-lspconfig" },
-    { src = "https://github.com/mason-org/mason.nvim" },
-    { src = "https://github.com/mason-org/mason-lspconfig.nvim" },
-    { src = "https://github.com/folke/which-key.nvim.git" },
-    { src = "https://github.com/kdheepak/lazygit.nvim.git" },
-    { src = "https://github.com/lewis6991/gitsigns.nvim.git" },
+    "https://github.com/neovim/nvim-lspconfig",
+    "https://github.com/mason-org/mason.nvim",
+    "https://github.com/mason-org/mason-lspconfig.nvim",
+    "https://github.com/folke/which-key.nvim.git",
+    "https://github.com/kdheepak/lazygit.nvim.git",
+    "https://github.com/lewis6991/gitsigns.nvim.git",
     {
         src = "https://github.com/saghen/blink.cmp.git",
         version = "v1.9.1",
     },
-    { src = "https://github.com/folke/snacks.nvim.git" },
-    { src = "https://github.com/nvim-mini/mini.nvim.git" },
-    { src = "https://github.com/stevearc/oil.nvim.git" },
-    { src = "https://github.com/nvim-lua/plenary.nvim.git" },
-    { src = "https://github.com/nvim-telescope/telescope.nvim.git" },
-    { src = "https://github.com/nvim-tree/nvim-web-devicons.git" },
+    "https://github.com/folke/snacks.nvim.git",
+    "https://github.com/nvim-mini/mini.nvim.git",
+    "https://github.com/stevearc/oil.nvim.git",
+    "https://github.com/nvim-lua/plenary.nvim.git",
+    "https://github.com/nvim-telescope/telescope.nvim.git",
+    "https://github.com/nvim-tree/nvim-web-devicons.git",
     { src = "https://github.com/mrcjkb/rustaceanvim.git", version = "v7.1.9" },
-    { src = "https://github.com/saecki/crates.nvim.git" },
+    "https://github.com/saecki/crates.nvim.git",
+    "https://github.com/olimorris/onedarkpro.nvim.git",
+    --[[{
+        src = "https://github.com/nvim-treesitter/nvim-treesitter",
+        branch = "main",
+        build = ":TSUpdate",
+    },--]]
 })
+
+--[[
+local setup_treesitter = function()
+    local treesitter = require("nvim-treesitter")
+    treesitter.setup({})
+    local ensure_installed = {
+        "rust",
+        "c",
+        "cpp",
+        "lua",
+        "markdown",
+        "typst",
+        "bash",
+    }
+
+    local config = require("nvim-treesitter.config")
+
+    local already_installed = config.get_installed()
+    local parsers_to_install = {}
+
+    for _, parser in ipairs(ensure_installed) do
+        if not vim.tbl_contains(already_installed, parser) then
+            table.insert(parsers_to_install, parser)
+        end
+    end
+
+    if #parsers_to_install then
+        treesitter.install(parsers_to_install)
+    end
+
+    local group = vim.api.nvim_create_augroup("TreeSitterConfig", { clear = true })
+    vim.api.nvim_create_autocmd("FileType", {
+        group = group,
+        callback = function(args)
+            if vim.list_contains(treesitter.get_installed(), vim.treesitter.language.get_lang(args.match)) then
+                vim.treesitter.start(args.buf)
+            end
+        end,
+    })
+end
+setup_treesitter()
+--]]
 
 require("crates").setup({})
 
@@ -103,6 +151,11 @@ require("telescope").setup({
 require("snacks").setup({
     notifier = { enabled = true },
     toggle = { enabled = true },
+    zen = {
+        toggles = {
+            dim = false,
+        },
+    },
 })
 
 require("oil").setup()
@@ -164,6 +217,7 @@ require("mason-lspconfig").setup({
         "yamlls",
         "buf_ls",
         "copilot",
+        "tinymist",
     },
 })
 
@@ -184,7 +238,6 @@ end
 
 -- COLORSCHEME
 
-vim.pack.add({ "https://github.com/olimorris/onedarkpro.nvim.git" })
 require("onedarkpro").setup()
 
 vim.cmd("colorscheme onedark")
