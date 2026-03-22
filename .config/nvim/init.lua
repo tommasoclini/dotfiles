@@ -51,6 +51,7 @@ vim.o.statusline = vim.o.statusline .. " %{strftime('%H:%M')}"
 vim.diagnostic.config({ virtual_text = true })
 
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
 local scroll = 3
 
@@ -94,7 +95,10 @@ vim.pack.add({
         branch = "main",
         build = ":TSUpdate",
     },--]]
+    "https://github.com/MagicDuck/grug-far.nvim.git",
 })
+
+require("grug-far").setup()
 
 --[[
 local setup_treesitter = function()
@@ -169,7 +173,16 @@ require("mini.tabline").setup({
 
 require("mini.extra").setup()
 
-require("mini.pairs").setup()
+require("mini.pairs").setup({
+    mappings = {
+        ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\][^%w_]" },
+        ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\][^%w_]" },
+        ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\][^%w_]" },
+        ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\][^%w_]" },
+        ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\][^%w_]" },
+        ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\][^%w_]" },
+    },
+})
 
 require("mini.bufremove").setup()
 vim.api.nvim_create_autocmd("BufHidden", {
@@ -284,6 +297,8 @@ vim.keymap.set("n", "<S-h>", function()
 end, { silent = true })
 
 Snacks.toggle.zen():map("<leader>z")
+
+vim.keymap.set("n", "<leader>gr", "<cmd>GrugFar<CR>", { desc = "GrugFar" })
 
 -- AUTOCOMMANDS
 
