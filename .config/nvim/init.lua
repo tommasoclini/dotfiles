@@ -53,6 +53,8 @@ vim.diagnostic.config({ virtual_text = true })
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+vim.g.format_on_save = true
+
 local scroll = 3
 
 vim.opt.scroll = scroll
@@ -163,6 +165,15 @@ require("snacks").setup({
 })
 
 require("oil").setup()
+
+local starter = require("mini.starter")
+starter.setup({
+    items = {
+        starter.sections.pick(),
+        starter.sections.recent_files(5, true),
+        starter.sections.recent_files(5, false),
+    },
+})
 
 require("mini.tabline").setup({
     format = function(buf_id, label)
