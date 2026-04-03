@@ -46,7 +46,7 @@ vim.o.termguicolors = true
 
 vim.o.scroll = 3
 
-vim.o.statusline = vim.o.statusline .. " %{strftime('%H:%M')}"
+-- vim.o.statusline = vim.o.statusline .. " %{strftime('%H:%M')}"
 
 vim.diagnostic.config({ virtual_text = true })
 
@@ -71,6 +71,7 @@ vim.lsp.log.set_level(vim.log.levels.WARN)
 -- PLUGINS
 
 vim.cmd("packadd! nohlsearch")
+vim.cmd("packadd! nvim.undotree")
 
 vim.pack.add({
     "https://github.com/neovim/nvim-lspconfig",
@@ -157,6 +158,7 @@ require("telescope").setup({
 require("snacks").setup({
     notifier = { enabled = true },
     toggle = { enabled = true },
+    picker = { enabled = true },
     zen = {
         toggles = {
             dim = false,
@@ -173,6 +175,7 @@ starter.setup({
         starter.sections.recent_files(5, true),
         starter.sections.recent_files(5, false),
     },
+    footer = "",
 })
 
 require("mini.tabline").setup({
@@ -216,8 +219,6 @@ vim.api.nvim_create_autocmd("BufHidden", {
         end)
     end,
 })
-
-require("mini.pick").setup()
 
 require("gitsigns").setup()
 
@@ -269,6 +270,8 @@ vim.cmd("colorscheme onedark")
 
 -- KEYMAPS
 
+vim.keymap.set("n", "<leader>ut", require("undotree").open)
+
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 
 vim.keymap.set({ "t", "i" }, "<A-h>", "<C-\\><C-n><C-w>h")
@@ -296,8 +299,8 @@ vim.keymap.set("n", "<leader>bd", MiniBufremove.delete, { desc = "My delete buff
 vim.keymap.set("n", "<leader>bw", MiniBufremove.wipeout, { desc = "My wipeout buffer" })
 
 -- pickers
-vim.keymap.set("n", "<leader><leader>", MiniPick.builtin.files, { desc = "pick files" })
-vim.keymap.set("n", "<leader>sg", MiniPick.builtin.grep_live, { desc = "grep files" })
+vim.keymap.set("n", "<leader><leader>", Snacks.picker.files, { desc = "search files" })
+vim.keymap.set("n", "<leader>sg", Snacks.picker.grep, { desc = "grep files" })
 
 -- buffer navigation
 vim.keymap.set("n", "<S-l>", function()
@@ -381,36 +384,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
             end,
         }):map("<leader>uf")
 
-        map("n", "<leader>gi", function()
-            MiniExtra.pickers.lsp({ scope = "implementation" }, {
-                source = {
-                    show = function(buf_id, items, query)
-                        local short_items = vim.tbl_map(function(item)
-                            local text = item.text or ""
-                            local path, rest = text:match("^(.-)│(.*)$")
-                            if path then
-                                local fname = vim.fn.fnamemodify(path, ":t")
-                                item = vim.tbl_extend("force", item, { text = fname .. "│" .. rest })
-                            end
-                            return item
-                        end, items)
-                        MiniPick.default_show(buf_id, short_items, query, { show_icons = true })
-                    end,
-                },
-            })
-        end, { buffer = bufnr, desc = "go to implementation" })
+        map("n", "<leader>gi", Snacks.picker.lsp_implementations, { buffer = bufnr, desc = "go to implementation" })
 
-        map("n", "<leader>gy", function()
-            MiniExtra.pickers.lsp({ scope = "type_definition" })
-        end, { buffer = bufnr, desc = "go to type definition" })
+        map("n", "<leader>gy", Snacks.picker.lsp_definitions, { buffer = bufnr, desc = "go to type definition" })
 
-        map("n", "<leader>ss", function()
-            MiniExtra.pickers.lsp({ scope = "document_symbol" })
-        end, { buffer = bufnr, desc = "Pick document symbols" })
+        map("n", "<leader>ss", Snacks.picker.lsp_symbols, { buffer = bufnr, desc = "pick document symbols" })
 
-        map("n", "<leader>sS", function()
-            MiniExtra.pickers.lsp({ scope = "workspace_symbol" })
-        end, { buffer = bufnr, desc = "Pick workspace symbols" })
+        map("n", "<leader>sS", Snacks.picker.lsp_workspace_symbols, { buffer = bufnr, desc = "pick workspace symbols" })
 
         map("n", "<leader>f", function()
             vim.lsp.buf.format({ async = true, bufnr = bufnr })
@@ -455,20 +435,3 @@ vim.api.nvim_create_autocmd("TextYankPost", {
         vim.hl.on_yank()
     end,
 })
-
--- TIMERS
-
-local timer = vim.loop.new_timer()
-
-local now = os.time()
-local seconds_until_next_minute = 60 - (now % 60)
-
-if timer then
-    timer:start(
-        seconds_until_next_minute * 1000,
-        60000,
-        vim.schedule_wrap(function()
-            vim.cmd("redrawstatus")
-        end)
-    )
-end
