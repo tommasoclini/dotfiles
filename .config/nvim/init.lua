@@ -66,12 +66,13 @@ vim.api.nvim_create_autocmd({ "VimResized", "BufWinEnter" }, {
 })
 --]]
 
-vim.lsp.log.set_level(vim.log.levels.WARN)
+vim.lsp.log.set_level(vim.log.levels.ERROR)
 
 -- PLUGINS
 
 vim.cmd("packadd! nohlsearch")
 vim.cmd("packadd! nvim.undotree")
+vim.cmd("packadd! nvim.difftool")
 
 vim.pack.add({
     "https://github.com/neovim/nvim-lspconfig",
@@ -82,7 +83,7 @@ vim.pack.add({
     "https://github.com/lewis6991/gitsigns.nvim.git",
     {
         src = "https://github.com/saghen/blink.cmp.git",
-        version = "v1.9.1",
+        version = "v1.10.1",
     },
     "https://github.com/folke/snacks.nvim.git",
     "https://github.com/nvim-mini/mini.nvim.git",
@@ -99,6 +100,14 @@ vim.pack.add({
         build = ":TSUpdate",
     },--]]
     "https://github.com/MagicDuck/grug-far.nvim.git",
+    "https://github.com/ray-x/lsp_signature.nvim.git",
+})
+
+require("lsp_signature").setup({
+    bind = true,
+    handler_opts = {
+        borders = "rounded",
+    },
 })
 
 require("grug-far").setup()
@@ -158,7 +167,8 @@ require("telescope").setup({
 require("snacks").setup({
     notifier = { enabled = true },
     toggle = { enabled = true },
-    picker = { enabled = true },
+    picker = { enabled = true, sources = { explorer = { layout = { layout = { position = "right" } } } } },
+    explorer = { enabled = true },
     zen = {
         toggles = {
             dim = false,
@@ -171,7 +181,13 @@ require("oil").setup()
 local starter = require("mini.starter")
 starter.setup({
     items = {
-        starter.sections.pick(),
+        {
+            { action = Snacks.picker.command_history, name = "Command history", section = "Pick" },
+            { action = Snacks.explorer.open, name = "Explorer", section = "Pick" },
+            { action = Snacks.picker.files, name = "Files", section = "Pick" },
+            { action = Snacks.picker.grep, name = "Grep live", section = "Pick" },
+            { action = Snacks.picker.help, name = "Help tags", section = "Pick" },
+        },
         starter.sections.recent_files(5, true),
         starter.sections.recent_files(5, false),
     },
@@ -183,6 +199,7 @@ require("mini.tabline").setup({
         local suffix = vim.bo[buf_id].modified and "+ " or ""
         return MiniTabline.default_format(buf_id, label) .. suffix
     end,
+    tabpage_section = "right",
 })
 
 require("mini.extra").setup()
@@ -234,14 +251,14 @@ require("blink.cmp").setup({
 })
 
 require("mason").setup()
-require("mason-lspconfig").setup({
+local mason_lspconfig = require("mason-lspconfig")
+mason_lspconfig.setup({
     ensure_installed = {
         "lua_ls",
         "clangd",
         "tombi",
         "yamlls",
         "buf_ls",
-        "copilot",
         "tinymist",
     },
 })
@@ -301,6 +318,9 @@ vim.keymap.set("n", "<leader>bw", MiniBufremove.wipeout, { desc = "My wipeout bu
 -- pickers
 vim.keymap.set("n", "<leader><leader>", Snacks.picker.files, { desc = "search files" })
 vim.keymap.set("n", "<leader>sg", Snacks.picker.grep, { desc = "grep files" })
+
+-- explorer
+vim.keymap.set("n", "<leader>e", Snacks.explorer.open, { desc = "file explorer" })
 
 -- buffer navigation
 vim.keymap.set("n", "<S-l>", function()
@@ -396,7 +416,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
             vim.lsp.buf.format({ async = true, bufnr = bufnr })
         end, { buffer = bufnr, desc = "Format buffer with lsp" })
 
-        map("n", "<leader>r", vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename symbol with lsp" })
+        -- map("n", "<leader>r", vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename symbol with lsp" })
 
         if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, bufnr) then
             map("i", "<C-F>", vim.lsp.inline_completion.get, { desc = "LSP: accept inline completion", buffer = bufnr })
@@ -434,4 +454,28 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     callback = function()
         vim.hl.on_yank()
     end,
+})
+
+require("vim._core.ui2").enable({
+    enable = true, -- Whether to enable or disable the UI.
+    msg = { -- Options related to the message module.
+        ---@type 'cmd'|'msg' Default message target, either in the
+        ---cmdline or in a separate ephemeral message window.
+        ---@type string|table<string, 'cmd'|'msg'|'pager'> Default message target
+        ---or table mapping |ui-messages| kinds and triggers to a target.
+        targets = "cmd",
+        cmd = { -- Options related to messages in the cmdline window.
+            height = 0.5, -- Maximum height while expanded for messages beyond 'cmdheight'.
+        },
+        dialog = { -- Options related to dialog window.
+            height = 0.5, -- Maximum height.
+        },
+        msg = { -- Options related to msg window.
+            height = 0.5, -- Maximum height.
+            timeout = 4000, -- Time a message is visible in the message window.
+        },
+        pager = { -- Options related to message window.
+            height = 1, -- Maximum height.
+        },
+    },
 })
