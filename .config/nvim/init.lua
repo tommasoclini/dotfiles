@@ -91,7 +91,7 @@ vim.pack.add({
     "https://github.com/nvim-lua/plenary.nvim.git",
     "https://github.com/nvim-telescope/telescope.nvim.git",
     "https://github.com/nvim-tree/nvim-web-devicons.git",
-    { src = "https://github.com/mrcjkb/rustaceanvim.git", version = "v7.1.9" },
+    { src = "https://github.com/mrcjkb/rustaceanvim.git", version = vim.version.range("^9") },
     "https://github.com/saecki/crates.nvim.git",
     "https://github.com/olimorris/onedarkpro.nvim.git",
     --[[{
