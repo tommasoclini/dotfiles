@@ -26,6 +26,10 @@
       "rev": "6f8c2097ab4422976063fefe0f29331e12a32334",
       "src": "https://github.com/MagicDuck/grug-far.nvim.git"
     },
+    "gruvbox.nvim": {
+      "rev": "334d5fd49fc8033f26408425366c66c6390c57bb",
+      "src": "https://github.com/ellisonleao/gruvbox.nvim.git"
+    },
     "lazygit.nvim": {
       "rev": "a04ad0dbc725134edbee3a5eea29290976695357",
       "src": "https://github.com/kdheepak/lazygit.nvim.git"
@@ -45,6 +49,10 @@
     "mini.nvim": {
       "rev": "2431902e78b76f435542d1e606f08475360068ca",
       "src": "https://github.com/nvim-mini/mini.nvim.git"
+    },
+    "no-neck-pain.nvim": {
+      "rev": "4bc52782524fd50c5658685d584df6fa48fe49f9",
+      "src": "https://github.com/shortcuts/no-neck-pain.nvim.git"
     },
     "nvim-lspconfig": {
       "rev": "bedca8b426b2fee0ccac596d167d71bbe971253f",
@@ -82,6 +90,10 @@
     "telescope.nvim": {
       "rev": "7ef4d6dccb78ee71e552bbd866176762ad328afa",
       "src": "https://github.com/nvim-telescope/telescope.nvim.git"
+    },
+    "tree-sitter-manager.nvim": {
+      "rev": "1085058c03df1d063f285e0a5c42547ad200a10b",
+      "src": "https://github.com/romus204/tree-sitter-manager.nvim.git"
     },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",

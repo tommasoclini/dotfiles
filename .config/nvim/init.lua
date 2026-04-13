@@ -89,7 +89,6 @@ vim.pack.add({
     "https://github.com/nvim-mini/mini.nvim.git",
     "https://github.com/stevearc/oil.nvim.git",
     "https://github.com/nvim-lua/plenary.nvim.git",
-    "https://github.com/nvim-telescope/telescope.nvim.git",
     "https://github.com/nvim-tree/nvim-web-devicons.git",
     { src = "https://github.com/mrcjkb/rustaceanvim.git", version = vim.version.range("^9") },
     "https://github.com/saecki/crates.nvim.git",
@@ -101,6 +100,22 @@ vim.pack.add({
     },--]]
     "https://github.com/MagicDuck/grug-far.nvim.git",
     "https://github.com/ray-x/lsp_signature.nvim.git",
+    "https://github.com/romus204/tree-sitter-manager.nvim.git",
+    "https://github.com/ellisonleao/gruvbox.nvim.git",
+    "https://github.com/shortcuts/no-neck-pain.nvim.git",
+})
+
+require("no-neck-pain").setup()
+
+require("tree-sitter-manager").setup({
+    ensure_installed = {
+        "rust",
+        "lua",
+        "c",
+        "cpp",
+        "cmake",
+    },
+    nohighlight = { "rust", "c", "cpp", "toml" },
 })
 
 require("lsp_signature").setup({
@@ -156,6 +171,7 @@ setup_treesitter()
 
 require("crates").setup({})
 
+--[[
 require("telescope").setup({
     pickers = {
         colorscheme = {
@@ -163,6 +179,7 @@ require("telescope").setup({
         },
     },
 })
+--]]
 
 require("snacks").setup({
     notifier = { enabled = true },
@@ -280,12 +297,13 @@ end
 
 -- COLORSCHEME
 
-require("onedarkpro").setup()
+vim.cmd("colorscheme gruvbox")
 
-vim.cmd("colorscheme onedark")
 --  end
 
 -- KEYMAPS
+
+vim.keymap.set("n", "<leader>N", NoNeckPain.toggle)
 
 vim.keymap.set("n", "<leader>ut", require("undotree").open)
 
