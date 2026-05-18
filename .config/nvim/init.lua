@@ -195,6 +195,7 @@ require("snacks").setup({
 
 require("oil").setup()
 
+--[[
 local starter = require("mini.starter")
 starter.setup({
     items = {
@@ -210,6 +211,7 @@ starter.setup({
     },
     footer = "",
 })
+--]]
 
 require("mini.tabline").setup({
     format = function(buf_id, label)
