@@ -456,8 +456,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
         if client and client.server_capabilities.documentFormattingProvider then
             vim.api.nvim_create_autocmd("BufWritePre", {
                 buffer = bufnr,
-                callback = function()
-                    if vim.g.format_on_save == true then
+                callback = function(event)
+                    if vim.g.format_on_save == true and vim.bo[event.buf].filetype ~= "toml" then
                         vim.lsp.buf.format({
                             bufnr = bufnr,
                             async = false,
