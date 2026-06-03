@@ -43,11 +43,11 @@
       "src": "https://github.com/mason-org/mason-lspconfig.nvim"
     },
     "mason.nvim": {
-      "rev": "bb639d4bf385a4d89f478b83af4d770be05ab7eb",
+      "rev": "16ba83bfc8a25f52bb545134f5bee082b195c460",
       "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.nvim": {
-      "rev": "44657837c7338e52727facc85c1d95bec1f6bd7c",
+      "rev": "9d0b9b7188d5c24b5a87f0d8b383ec8bda7a0de4",
       "src": "https://github.com/nvim-mini/mini.nvim.git"
     },
     "no-neck-pain.nvim": {
@@ -55,7 +55,7 @@
       "src": "https://github.com/shortcuts/no-neck-pain.nvim.git"
     },
     "nvim-lspconfig": {
-      "rev": "6f76a3eeadc2ee235d74cd7d5319e95a261084af",
+      "rev": "9573948c38bfabeec353ae7dd7d3ffec4c506a6b",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-web-devicons": {
@@ -92,7 +92,7 @@
       "src": "https://github.com/nvim-telescope/telescope.nvim.git"
     },
     "tree-sitter-manager.nvim": {
-      "rev": "8c8b9c5a154e33c565baa2f4562eb50056df8f5b",
+      "rev": "bb66b815aff01e87b2e26be995116be8d2f91474",
       "src": "https://github.com/romus204/tree-sitter-manager.nvim.git"
     },
     "which-key.nvim": {
