@@ -1,4 +1,4 @@
--- vim.loader.enable(true)
+vim.loader.enable(true)
 
 local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
 
@@ -182,7 +182,15 @@ require("telescope").setup({
 --]]
 
 require("snacks").setup({
-    notifier = { enabled = true },
+    notifier = {
+        enabled = true,
+        filter = function(notif)
+            if notif.msg and notif.msg:find("No esp%-clangd found") then
+                return false
+            end
+            return true
+        end,
+    },
     toggle = { enabled = true },
     picker = { enabled = true, sources = { explorer = { layout = { layout = { position = "right" } } } } },
     explorer = { enabled = true },
