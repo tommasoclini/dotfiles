@@ -274,7 +274,20 @@ require("blink.cmp").setup({
         preset = "default",
         ["<CR>"] = { "accept", "fallback" },
         ["<C-s>"] = { "show" },
+        ["<Tab>"] = { "accept", "fallback" },
+        ['<Up>'] = { 'select_prev', 'fallback' },
+        ['<Down>'] = { 'select_next', 'fallback' },
+        ['<C-Space>'] = { 'show', 'fallback' },
     },
+    cmdline = {
+        enabled = true,
+        keymap = {
+            preset = 'cmdline',
+            ['<Tab>'] = { 'show', 'accept', 'select_next' },
+            ['<Up>'] = { 'select_prev', 'fallback' },
+            ['<Down>'] = { 'select_next', 'fallback' },
+        },
+    }
 })
 
 require("mason").setup()
@@ -284,7 +297,6 @@ mason_lspconfig.setup({
         "lua_ls",
         "clangd",
         "tombi",
-        "yamlls",
         "buf_ls",
         "tinymist",
     },
