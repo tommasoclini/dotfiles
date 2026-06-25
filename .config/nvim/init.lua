@@ -48,7 +48,28 @@ vim.o.scroll = 3
 
 -- vim.o.statusline = vim.o.statusline .. " %{strftime('%H:%M')}"
 
-vim.diagnostic.config({ virtual_text = true })
+vim.diagnostic.config({
+    virtual_text = {
+        format = function(diagnostic)
+            local code = diagnostic.code
+
+            if code == "inactive-code" then
+                return nil
+            end
+
+            if type(code) == "table" and code.value == "inactive-code" then
+                return nil
+            end
+
+            local message = diagnostic.message and diagnostic.message:lower()
+            if message and (message:find("code is inactive", 1, true) or message:find("inactive code", 1, true)) then
+                return nil
+            end
+
+            return diagnostic.message
+        end,
+    },
+})
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -465,3 +486,5 @@ require("vim._core.ui2").enable({
         },
     },
 })
+
+vim.o.ic = true
