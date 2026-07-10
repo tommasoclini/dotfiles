@@ -19,15 +19,15 @@
       "src": "https://github.com/Aietes/esp32.nvim.git"
     },
     "fidget.nvim": {
-      "rev": "82404b196e73a00b1727a91903beef5ddc319d22",
+      "rev": "6f793b2bcd2d35e201c09520f698bb763220908a",
       "src": "https://github.com/j-hui/fidget.nvim.git"
     },
     "gitsigns.nvim": {
-      "rev": "25050e4ed39e628282831d4cbecb1850454ce915",
+      "rev": "eb60cc7b94c46005237fd34170d76f3a089a90aa",
       "src": "https://github.com/lewis6991/gitsigns.nvim.git"
     },
     "grug-far.nvim": {
-      "rev": "c995bbacf8229dc096ec1c3d60f8531059c86c1b",
+      "rev": "c69859c1d5427ab5fc7ed12380ab521b4e336691",
       "src": "https://github.com/MagicDuck/grug-far.nvim.git"
     },
     "gruvbox.nvim": {
@@ -43,7 +43,7 @@
       "src": "https://github.com/ray-x/lsp_signature.nvim.git"
     },
     "mason-lspconfig.nvim": {
-      "rev": "906c32c8a034dd3d51353d63226bf91aeacd927c",
+      "rev": "47059d71b42d74b0a1e9f61c1d99d301039c3b5b",
       "src": "https://github.com/mason-org/mason-lspconfig.nvim"
     },
     "mason.nvim": {
@@ -51,19 +51,19 @@
       "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.nvim": {
-      "rev": "a59a9b7fb0a42cbcf022938ee5f0724320b66f63",
+      "rev": "fdc8b9701616863e44f7a7a0802cfe16bd866539",
       "src": "https://github.com/nvim-mini/mini.nvim.git"
     },
     "no-neck-pain.nvim": {
-      "rev": "4bc52782524fd50c5658685d584df6fa48fe49f9",
+      "rev": "0df6659e25401c3f3c40e82f1ddd48714b1a659c",
       "src": "https://github.com/shortcuts/no-neck-pain.nvim.git"
     },
     "nvim-lspconfig": {
-      "rev": "ed19590a3a9792901553c388d1aadafce012f80d",
+      "rev": "d224a1920728ba129880efc700d4a0180ac4ecbb",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-web-devicons": {
-      "rev": "dfbfaa967a6f7ec50789bead7ef87e336c1fa63c",
+      "rev": "dad71387de386a946b123079d0e53f23028f3abd",
       "src": "https://github.com/nvim-tree/nvim-web-devicons.git"
     },
     "oil.nvim": {
@@ -92,11 +92,11 @@
       "src": "https://github.com/folke/snacks.nvim.git"
     },
     "telescope.nvim": {
-      "rev": "7d324792b7943e4aa16ad007212e6acc6f9fe335",
+      "rev": "427b576c16792edad01a92b89721d923c19ad60f",
       "src": "https://github.com/nvim-telescope/telescope.nvim.git"
     },
     "tree-sitter-manager.nvim": {
-      "rev": "c8a7b7b91aa23da24e7d02874f78d4c668a08530",
+      "rev": "09e3a321eea8100cacd2e759c3a6c9d350295fab",
       "src": "https://github.com/romus204/tree-sitter-manager.nvim.git"
     },
     "which-key.nvim": {

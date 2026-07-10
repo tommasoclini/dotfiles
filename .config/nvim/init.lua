@@ -276,7 +276,7 @@ if not is_windows then
         table.insert(clangd.cmd, "--header-insertion=never")
         table.insert(
             clangd.cmd,
-            "--query-driver=/usr/bin/clang*,/usr/bin/gcc,/usr/bin/g++,/usr/bin/cc,/home/tommaso/git_repos/bldc/tools/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-gcc,/home/tommaso/git_repos/my-bldc/tools/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-gcc"
+            "--query-driver=/usr/bin/clang*,/usr/bin/gcc,/usr/bin/g++,/usr/bin/cc"
         )
         return clangd
     end
@@ -291,6 +291,8 @@ vim.cmd("colorscheme gruvbox")
 --  end
 
 -- KEYMAPS
+
+vim.keymap.set({ "n", "v" }, "s", [[/\%.l]], { desc = "search current line" })
 
 vim.keymap.set("n", "<leader>N", NoNeckPain.toggle)
 
@@ -328,6 +330,9 @@ vim.keymap.set("n", "<leader>sg", Snacks.picker.grep, { desc = "grep files" })
 
 -- explorer
 vim.keymap.set("n", "<leader>e", Snacks.explorer.open, { desc = "file explorer" })
+vim.keymap.set("n", "<leader>E",
+    function() Snacks.explorer.open({ cwd = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ':h') }) end,
+    { desc = "file explorer in buffer directory" })
 
 -- buffer navigation
 vim.keymap.set("n", "<S-l>", function()
