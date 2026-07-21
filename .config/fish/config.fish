@@ -9,8 +9,6 @@ end
 
 zoxide init fish | source
 
-# eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
 if test -d (brew --prefix)"/share/fish/completions"
     set -p fish_complete_path (brew --prefix)/share/fish/completions
 end
