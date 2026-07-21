@@ -120,7 +120,13 @@ vim.pack.add({
     "https://github.com/ellisonleao/gruvbox.nvim.git",
     "https://github.com/shortcuts/no-neck-pain.nvim.git",
     "https://github.com/j-hui/fidget.nvim.git",
+    "https://github.com/pteroctopus/faster.nvim.git",
+    "https://github.com/lukas-reineke/indent-blankline.nvim.git",
 })
+
+require("ibl").setup()
+
+require("faster").setup()
 
 require("fidget").setup({})
 
@@ -240,11 +246,10 @@ require("blink.cmp").setup({
     keymap = {
         preset = "default",
         ["<CR>"] = { "accept", "fallback" },
-        ["<C-s>"] = { "show" },
         ["<Tab>"] = { "accept", "fallback" },
         ['<Up>'] = { 'select_prev', 'fallback' },
         ['<Down>'] = { 'select_next', 'fallback' },
-        ['<C-Space>'] = { 'show', 'fallback' },
+        ['<C-Space>'] = { 'show', 'show_documentation', 'hide_documentation' },
     },
     cmdline = {
         enabled = true,
@@ -254,7 +259,17 @@ require("blink.cmp").setup({
             ['<Up>'] = { 'select_prev', 'fallback' },
             ['<Down>'] = { 'select_next', 'fallback' },
         },
-    }
+    },
+    --[[signature = {
+        enabled = true,
+        keymap = {
+            ['<C-u>'] = { 'scroll_signature_up', 'fallback' },
+            ['<C-d>'] = { 'scroll_signature_down', 'fallback' },
+
+            -- default in all keymap presets
+            ['<C-k>'] = { 'show_signature', 'hide_signature', 'fallback' },
+        }
+    },--]]
 })
 
 require("mason").setup()
@@ -270,20 +285,24 @@ mason_lspconfig.setup({
 })
 
 if not is_windows then
-    vim.pack.add({ "https://github.com/Aietes/esp32.nvim.git" })
-    local get_clangd = function()
-        local clangd = require("esp32").lsp_config()
-        table.insert(clangd.cmd, "--header-insertion=never")
-        table.insert(
-            clangd.cmd,
-            "--query-driver=/usr/bin/clang*,/usr/bin/gcc,/usr/bin/g++,/usr/bin/cc"
-        )
-        return clangd
-    end
+    vim.api.nvim_create_autocmd("SafeState", {
+        once = true,
+        callback = function()
+            vim.defer_fn(function()
+                vim.pack.add({ "https://github.com/Aietes/esp32.nvim.git" })
 
-    vim.lsp.config("clangd", get_clangd())
+                local clangd = require("esp32").lsp_config()
+                table.insert(clangd.cmd, "--header-insertion=never")
+                table.insert(
+                    clangd.cmd,
+                    "--query-driver=/usr/bin/clang*,/usr/bin/gcc,/usr/bin/g++,/usr/bin/cc,/usr/bin/c++"
+                )
+
+                vim.lsp.config("clangd", clangd)
+            end, 500) -- ms
+        end,
+    })
 end
-
 -- COLORSCHEME
 
 vim.cmd("colorscheme gruvbox")
@@ -291,6 +310,14 @@ vim.cmd("colorscheme gruvbox")
 --  end
 
 -- KEYMAPS
+
+vim.keymap.set("n", "<leader>ub", function()
+    if vim.o.background == "light" then
+        vim.o.background = "dark"
+    else
+        vim.o.background = "light"
+    end
+end, { desc = "toggle background" })
 
 vim.keymap.set({ "n", "v" }, "s", [[/\%.l]], { desc = "search current line" })
 

@@ -18,21 +18,29 @@
       "rev": "112b4b052b7d3ccd361a53e683808435a4ecaf5a",
       "src": "https://github.com/Aietes/esp32.nvim.git"
     },
+    "faster.nvim": {
+      "rev": "6b7cb8b1a9628d4b87009c4849d510d1a3a14319",
+      "src": "https://github.com/pteroctopus/faster.nvim.git"
+    },
     "fidget.nvim": {
       "rev": "6f793b2bcd2d35e201c09520f698bb763220908a",
       "src": "https://github.com/j-hui/fidget.nvim.git"
     },
     "gitsigns.nvim": {
-      "rev": "eb60cc7b94c46005237fd34170d76f3a089a90aa",
+      "rev": "31d6fb2d618bca1482b9f274751ead5f03461408",
       "src": "https://github.com/lewis6991/gitsigns.nvim.git"
     },
     "grug-far.nvim": {
-      "rev": "c69859c1d5427ab5fc7ed12380ab521b4e336691",
+      "rev": "1cc080f55706b38aabfa97d40acb6adf59ac4a5a",
       "src": "https://github.com/MagicDuck/grug-far.nvim.git"
     },
     "gruvbox.nvim": {
       "rev": "154eb5ff5b96d0641307113fa385eaf0d36d9796",
       "src": "https://github.com/ellisonleao/gruvbox.nvim.git"
+    },
+    "indent-blankline.nvim": {
+      "rev": "d28a3f70721c79e3c5f6693057ae929f3d9c0a03",
+      "src": "https://github.com/lukas-reineke/indent-blankline.nvim.git"
     },
     "lazygit.nvim": {
       "rev": "a04ad0dbc725134edbee3a5eea29290976695357",
@@ -43,7 +51,7 @@
       "src": "https://github.com/ray-x/lsp_signature.nvim.git"
     },
     "mason-lspconfig.nvim": {
-      "rev": "47059d71b42d74b0a1e9f61c1d99d301039c3b5b",
+      "rev": "7adc933dabcc7c86ae6b07aff7ee68eac398491f",
       "src": "https://github.com/mason-org/mason-lspconfig.nvim"
     },
     "mason.nvim": {
@@ -51,7 +59,7 @@
       "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.nvim": {
-      "rev": "fdc8b9701616863e44f7a7a0802cfe16bd866539",
+      "rev": "a35f08f63b73f0ffac045cd175fb2a22e167c39c",
       "src": "https://github.com/nvim-mini/mini.nvim.git"
     },
     "no-neck-pain.nvim": {
@@ -59,11 +67,11 @@
       "src": "https://github.com/shortcuts/no-neck-pain.nvim.git"
     },
     "nvim-lspconfig": {
-      "rev": "d224a1920728ba129880efc700d4a0180ac4ecbb",
+      "rev": "b89138d9af0a96e6048e202a15765fc6b6416bd4",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-web-devicons": {
-      "rev": "dad71387de386a946b123079d0e53f23028f3abd",
+      "rev": "0ca28b61a04fe7426cefbdd52c2647ef0e335b5f",
       "src": "https://github.com/nvim-tree/nvim-web-devicons.git"
     },
     "oil.nvim": {
