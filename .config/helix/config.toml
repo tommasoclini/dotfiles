@@ -1,4 +1,4 @@
-theme = "my_onedark"
+theme = "gruvbox"
 
 [editor]
 line-number = "relative"
@@ -42,8 +42,8 @@ mode.select = "SELECT"
 cursor-line = "hint"
 other-lines = "error"
 
-[editor.lsp]
-display-inlay-hints = true
+# [editor.lsp]
+# display-inlay-hints = true
 
 [keys.insert]
 C-s = ["normal_mode", ":w"]
