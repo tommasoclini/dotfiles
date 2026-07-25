@@ -1,4 +1,4 @@
-vim.loader.enable(true)
+vim.loader.enable()
 
 local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
 
@@ -76,16 +76,7 @@ vim.g.maplocalleader = " "
 
 vim.g.format_on_save = true
 
-local scroll = 3
-
-vim.opt.scroll = scroll
---[[
-vim.api.nvim_create_autocmd({ "VimResized", "BufWinEnter" }, {
-    callback = function()
-        vim.opt_local.scroll = scroll
-    end,
-})
---]]
+vim.opt.scroll = 3
 
 vim.lsp.log.set_level(vim.log.levels.ERROR)
 
@@ -116,15 +107,23 @@ vim.pack.add({
     "https://github.com/olimorris/onedarkpro.nvim.git",
     "https://github.com/MagicDuck/grug-far.nvim.git",
     "https://github.com/ray-x/lsp_signature.nvim.git",
-    "https://github.com/romus204/tree-sitter-manager.nvim.git",
     "https://github.com/ellisonleao/gruvbox.nvim.git",
     "https://github.com/shortcuts/no-neck-pain.nvim.git",
     "https://github.com/j-hui/fidget.nvim.git",
     "https://github.com/pteroctopus/faster.nvim.git",
     "https://github.com/lukas-reineke/indent-blankline.nvim.git",
+    "https://github.com/nvim-treesitter/nvim-treesitter.git",
+    "https://github.com/folke/todo-comments.nvim.git",
 })
 
-require("ibl").setup()
+-- local hooks = require("ibl.hooks")
+-- hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+--     vim.api.nvim_set_hl(0, "IblScope", { fg = "#61AFEF" })
+-- end)
+
+require("todo-comments").setup()
+
+require("ibl").setup({ scope = { highlight = "IblScope" } })
 
 require("faster").setup()
 
@@ -132,16 +131,8 @@ require("fidget").setup({})
 
 require("no-neck-pain").setup()
 
-require("tree-sitter-manager").setup({
-    ensure_installed = {
-        "rust",
-        "lua",
-        "c",
-        "cpp",
-        "cmake",
-    },
-    nohighlight = { "rust", "c", "cpp", "toml" },
-})
+require("nvim-treesitter").setup {}
+require("nvim-treesitter").install { "rust", "lua", "c", "cpp" }
 
 require("lsp_signature").setup({
     bind = true,
@@ -151,8 +142,6 @@ require("lsp_signature").setup({
 })
 
 require("grug-far").setup()
-
-require("crates").setup({})
 
 require("snacks").setup({
     notifier = {
@@ -175,24 +164,6 @@ require("snacks").setup({
 })
 
 require("oil").setup()
-
---[[
-local starter = require("mini.starter")
-starter.setup({
-    items = {
-        {
-            { action = Snacks.picker.command_history, name = "Command history", section = "Pick" },
-            { action = Snacks.explorer.open, name = "Explorer", section = "Pick" },
-            { action = Snacks.picker.files, name = "Files", section = "Pick" },
-            { action = Snacks.picker.grep, name = "Grep live", section = "Pick" },
-            { action = Snacks.picker.help, name = "Help tags", section = "Pick" },
-        },
-        starter.sections.recent_files(5, true),
-        starter.sections.recent_files(5, false),
-    },
-    footer = "",
-})
---]]
 
 require("mini.tabline").setup({
     format = function(buf_id, label)
@@ -311,6 +282,9 @@ vim.cmd("colorscheme gruvbox")
 
 -- KEYMAPS
 
+vim.keymap.set("n", "]c", "<cmd>Gitsigns next_hunk<cr>", { desc = "next git change" })
+vim.keymap.set("n", "[c", "<cmd>Gitsigns prev_hunk<cr>", { desc = "prev git change" })
+
 vim.keymap.set("n", "<leader>ub", function()
     if vim.o.background == "light" then
         vim.o.background = "dark"
@@ -340,9 +314,9 @@ vim.keymap.set({ "n" }, "<A-]>", "<cmd>tabnext<cr>")
 vim.keymap.set({ "n" }, "<A-[>", "<cmd>tabprev<cr>")
 
 -- Lazygit
-if vim.fn.executable("lazygit") then
-    vim.keymap.set("n", "<leader>lg", "<cmd>LazyGit<cr>", { desc = "LazyGit" })
-end
+-- if vim.fn.executable("lazygit") then
+vim.keymap.set("n", "<leader>lg", "<cmd>LazyGit<cr>", { desc = "LazyGit" })
+-- end
 
 -- Oil
 vim.keymap.set("n", "<leader>o", "<cmd>Oil<cr>", { desc = "Oil file explorer" })
@@ -382,19 +356,20 @@ vim.api.nvim_create_autocmd("UIEnter", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = "rust",
-    group = vim.api.nvim_create_augroup("Rust_disable_single_quote", { clear = true }),
+    pattern = { "rust", "c", "cpp", "lua" },
     callback = function()
-        MiniPairs.unmap("i", "'", "''")
+        vim.treesitter.start()
     end,
-    desc = "Disable single quote Rust",
+    desc = "treesitter start",
 })
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "rust",
     callback = function()
+        MiniPairs.unmap("i", "'", "''")
         vim.opt_local.scroll = 3
     end,
+    desc = "rust specific tweaks",
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -495,28 +470,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     end,
 })
 
-require("vim._core.ui2").enable({
-    enable = true, -- Whether to enable or disable the UI.
-    msg = {        -- Options related to the message module.
-        ---@type 'cmd'|'msg' Default message target, either in the
-        ---cmdline or in a separate ephemeral message window.
-        ---@type string|table<string, 'cmd'|'msg'|'pager'> Default message target
-        ---or table mapping |ui-messages| kinds and triggers to a target.
-        targets = "cmd",
-        cmd = {             -- Options related to messages in the cmdline window.
-            height = 0.5,   -- Maximum height while expanded for messages beyond 'cmdheight'.
-        },
-        dialog = {          -- Options related to dialog window.
-            height = 0.5,   -- Maximum height.
-        },
-        msg = {             -- Options related to msg window.
-            height = 0.5,   -- Maximum height.
-            timeout = 4000, -- Time a message is visible in the message window.
-        },
-        pager = {           -- Options related to message window.
-            height = 1,     -- Maximum height.
-        },
-    },
-})
+require("vim._core.ui2").enable()
 
 vim.o.ic = true
