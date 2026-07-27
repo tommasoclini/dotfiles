@@ -121,6 +121,8 @@ vim.pack.add({
 --     vim.api.nvim_set_hl(0, "IblScope", { fg = "#61AFEF" })
 -- end)
 
+require("crates").setup({})
+
 require("todo-comments").setup()
 
 require("ibl").setup({ scope = { highlight = "IblScope" } })
