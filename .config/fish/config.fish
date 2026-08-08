@@ -20,3 +20,4 @@ end
 alias clear "printf '\033[2J\033[3J\033[1;1H'"
 alias nv "nvim"
 alias lz "lazygit"
+alias python "python3.14"

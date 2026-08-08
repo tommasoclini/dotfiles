@@ -4,6 +4,7 @@ local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
 
 -- OPTIONS
 
+vim.o.undofile = true
 vim.o.swapfile = false
 
 vim.o.encoding = "utf-8"
@@ -118,7 +119,7 @@ vim.pack.add({
 
 -- local hooks = require("ibl.hooks")
 -- hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
---     vim.api.nvim_set_hl(0, "IblScope", { fg = "#61AFEF" })
+--     vim.api.nvim_set_hl(0, "IblScope", { fg = "#DDDDDD" })
 -- end)
 
 require("crates").setup({})
@@ -265,17 +266,17 @@ if not is_windows then
                 vim.pack.add({ "https://github.com/Aietes/esp32.nvim.git" })
 
                 local clangd = require("esp32").lsp_config()
-                table.insert(clangd.cmd, "--header-insertion=never")
-                table.insert(
-                    clangd.cmd,
-                    "--query-driver=/usr/bin/clang*,/usr/bin/gcc,/usr/bin/g++,/usr/bin/cc,/usr/bin/c++"
-                )
-
+                -- table.insert(clangd.cmd, "--header-insertion=never")
+                -- table.insert(
+                --     clangd.cmd,
+                --     "--query-driver=/usr/bin/clang*,/usr/bin/gcc,/usr/bin/g++,/usr/bin/cc,/usr/bin/c++"
+                -- )
                 vim.lsp.config("clangd", clangd)
             end, 500) -- ms
         end,
     })
 end
+
 -- COLORSCHEME
 
 vim.cmd("colorscheme gruvbox")

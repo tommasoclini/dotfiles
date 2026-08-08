@@ -15,7 +15,7 @@
       "src": "https://github.com/saecki/crates.nvim.git"
     },
     "esp32.nvim": {
-      "rev": "112b4b052b7d3ccd361a53e683808435a4ecaf5a",
+      "rev": "57b3d174c3a063c3894bc41ddcf0e0289e7277e4",
       "src": "https://github.com/Aietes/esp32.nvim.git"
     },
     "faster.nvim": {
@@ -31,7 +31,7 @@
       "src": "https://github.com/lewis6991/gitsigns.nvim.git"
     },
     "grug-far.nvim": {
-      "rev": "0f6a5d0d7a70659b11bbcd6b3673ee0fe61b6024",
+      "rev": "6e05398cf6cad05b3fb46569db96b1ccfcbbd402",
       "src": "https://github.com/MagicDuck/grug-far.nvim.git"
     },
     "gruvbox.nvim": {
@@ -51,7 +51,7 @@
       "src": "https://github.com/ray-x/lsp_signature.nvim.git"
     },
     "mason-lspconfig.nvim": {
-      "rev": "7adc933dabcc7c86ae6b07aff7ee68eac398491f",
+      "rev": "67029ccdac1ef8941e13b826417bc0ffac24cc86",
       "src": "https://github.com/mason-org/mason-lspconfig.nvim"
     },
     "mason.nvim": {
@@ -59,7 +59,7 @@
       "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.nvim": {
-      "rev": "946ae64e0ee807ae3c41f382f0114b4ed4915b2c",
+      "rev": "bcb4b2688b38f5c48ada025abe130d41840e11d5",
       "src": "https://github.com/nvim-mini/mini.nvim.git"
     },
     "no-neck-pain.nvim": {
@@ -67,11 +67,11 @@
       "src": "https://github.com/shortcuts/no-neck-pain.nvim.git"
     },
     "nvim-lspconfig": {
-      "rev": "d592c1e6ad9a0a01b3d5ed3f0345d68407167181",
+      "rev": "1c0d8f70dbc8827263eedc3cf7021ceba0f68689",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
-      "rev": "a03c6283b079df3ec55705d4702d515ab2072267",
+      "rev": "7b6cc8949f9999c5ed91436cbe24aa5f99c42025",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter.git"
     },
     "nvim-web-devicons": {
@@ -95,7 +95,7 @@
       "src": "https://github.com/nvim-lua/plenary.nvim.git"
     },
     "rustaceanvim": {
-      "rev": "5a3a4158857ee1f7ec839b6ddd87cc0083a19c5f",
+      "rev": "d5bdc7a89dfd1ec7a9b80bdf90a201ece51a4564",
       "src": "https://github.com/mrcjkb/rustaceanvim.git",
       "version": "9.0.0 - 10.0.0"
     },
@@ -112,7 +112,7 @@
       "src": "https://github.com/folke/todo-comments.nvim.git"
     },
     "tree-sitter-manager.nvim": {
-      "rev": "09e3a321eea8100cacd2e759c3a6c9d350295fab",
+      "rev": "9dc4ffc4fb010e7abb976a92360c2c5a7d324c15",
       "src": "https://github.com/romus204/tree-sitter-manager.nvim.git"
     },
     "which-key.nvim": {
