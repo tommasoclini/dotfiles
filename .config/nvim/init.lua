@@ -285,6 +285,9 @@ vim.cmd("colorscheme gruvbox")
 
 -- KEYMAPS
 
+vim.keymap.set("i", "<M-Left>", "<C-Left>")
+vim.keymap.set("i", "<M-Right>", "<C-Right>")
+
 vim.keymap.set("n", "]c", "<cmd>Gitsigns next_hunk<cr>", { desc = "next git change" })
 vim.keymap.set("n", "[c", "<cmd>Gitsigns prev_hunk<cr>", { desc = "prev git change" })
 
