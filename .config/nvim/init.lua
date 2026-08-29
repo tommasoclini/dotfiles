@@ -115,12 +115,15 @@ vim.pack.add({
     "https://github.com/lukas-reineke/indent-blankline.nvim.git",
     "https://github.com/nvim-treesitter/nvim-treesitter.git",
     "https://github.com/folke/todo-comments.nvim.git",
+    "https://github.com/nvim-flutter/flutter-tools.nvim.git",
 })
 
 -- local hooks = require("ibl.hooks")
 -- hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
 --     vim.api.nvim_set_hl(0, "IblScope", { fg = "#DDDDDD" })
 -- end)
+
+require("flutter-tools").setup({})
 
 require("crates").setup({})
 
@@ -258,24 +261,69 @@ mason_lspconfig.setup({
     },
 })
 
-if not is_windows then
-    vim.api.nvim_create_autocmd("SafeState", {
-        once = true,
-        callback = function()
-            vim.defer_fn(function()
-                vim.pack.add({ "https://github.com/Aietes/esp32.nvim.git" })
-
-                local clangd = require("esp32").lsp_config()
-                -- table.insert(clangd.cmd, "--header-insertion=never")
-                -- table.insert(
-                --     clangd.cmd,
-                --     "--query-driver=/usr/bin/clang*,/usr/bin/gcc,/usr/bin/g++,/usr/bin/cc,/usr/bin/c++"
-                -- )
-                vim.lsp.config("clangd", clangd)
-            end, 500) -- ms
-        end,
+local function setup_default_clangd()
+    vim.lsp.config("clangd", {
+        cmd = {
+            "clangd",
+            "--background-index",
+            "--clang-tidy",
+            "--header-insertion=never",
+        },
     })
 end
+
+local function setup_esp32_clangd()
+    if is_windows then
+        vim.notify("esp32 clangd profile is not available on windows", vim.log.levels.WARN)
+        return
+    end
+
+    vim.pack.add({ "https://github.com/Aietes/esp32.nvim.git" })
+
+    local clangd = require("esp32").lsp_config()
+    vim.lsp.config("clangd", clangd)
+end
+
+local function set_clangd_profile(profile)
+    if profile == "esp32" then
+        setup_esp32_clangd()
+    else
+        setup_default_clangd()
+    end
+
+    vim.g.clangd_profile = profile
+    vim.notify("clangd profile set to " .. profile)
+
+    for _, client in ipairs(vim.lsp.get_clients({ name = "clangd" })) do
+        client:stop()
+    end
+
+    vim.cmd("edit")
+end
+
+setup_default_clangd()
+vim.g.clangd_profile = "normale"
+
+vim.api.nvim_create_user_command("ClangdProfile", function(opts)
+    local profile = opts.args
+
+    if profile == "normale" then
+        profile = "default"
+    end
+
+    if profile ~= "default" and profile ~= "esp32" then
+        vim.notify("invalid clangd profile: " .. profile .. " (use default|normale|esp32)", vim.log.levels.ERROR)
+        return
+    end
+
+    set_clangd_profile(profile == "default" and "normale" or profile)
+end, {
+    nargs = 1,
+    complete = function()
+        return { "default", "normale", "esp32" }
+    end,
+    desc = "switch clangd profile",
+})
 
 -- COLORSCHEME
 
@@ -325,7 +373,8 @@ vim.keymap.set("n", "<leader>lg", "<cmd>LazyGit<cr>", { desc = "LazyGit" })
 -- end
 
 -- Oil
-vim.keymap.set("n", "<leader>o", "<cmd>Oil<cr>", { desc = "Oil file explorer" })
+vim.keymap.set("n", "<leader>O", function() require("oil").open(vim.uv.cwd()) end, { desc = "Oil file explorer cwd" })
+vim.keymap.set("n", "<leader>o", require("oil").open, { desc = "Oil file explorer" })
 
 -- MiniBufRemove
 vim.keymap.set("n", "<leader>bd", MiniBufremove.delete, { desc = "My delete buffer" })
