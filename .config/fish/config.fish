@@ -17,7 +17,7 @@ if test -d (brew --prefix)"/share/fish/vendor_completions.d"
     set -p fish_complete_path (brew --prefix)/share/fish/vendor_completions.d
 end
 
-alias clear "printf '\033[2J\033[3J\033[1;1H'"
+# alias clear "printf '\033[2J\033[3J\033[1;1H'"
 alias nv "nvim"
 alias lz "lazygit"
 alias python "python3.14"
